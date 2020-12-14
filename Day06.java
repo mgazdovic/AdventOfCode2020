@@ -1,17 +1,57 @@
+/**
+ * Advent Of Code 2020
+ *  >>> www.adventofcode.com/2020
+ * 
+ * This file contains solutions to day 6.
+ * 
+ * @author Mislav.Gazdovic, mislav.gazdovic@gmail.com
+ *
+ */
+
 package adventOfCode2020;
 
 import java.util.*;
 
 public class Day06 {
-
-	public static int getUniqueAnswerCount(List<List<String>> input) {
-		HashSet<Character> groupAnswerSet;
-		int count = 0;
+	
+	private static class Group {
+		private Set<Person> persons = new HashSet<Person>();;
 		
-		for (List<String> group : input) {
+		public Group(Set<Person> persons) {
+			this.persons = persons;
+		}
+				
+		public Set<Person> getPersons() {
+			return this.persons;
+		}
+		
+		public int getNumberOfPersons() {
+			return this.persons.size();
+		}
+	}
+	
+	private static class Person {
+		private List<Character> answers = new ArrayList<Character>();
+		
+		public Person(String answers) {
+			for (Character answer : answers.toCharArray()) {
+				this.answers.add(answer);
+			}
+		}
+		
+		public List<Character> getAnswers() {
+			return this.answers;
+		}
+	}
+	
+	public static int getUniqueAnswerCount(Set<Group> groups) {
+		HashSet<Character> groupAnswerSet;
+		
+		int count = 0;
+		for (Group group : groups) {
 			groupAnswerSet = new HashSet<Character>();
-			for (String answers : group) {
-				for (Character answer : answers.toCharArray()) {
+			for (Person person : group.getPersons()) {
+				for (Character answer : person.getAnswers()) {
 					groupAnswerSet.add(answer);
 				}
 			}
@@ -21,14 +61,14 @@ public class Day06 {
 		return count;
 	}
 	
-	public static int getAllAnswerCount(List<List<String>> input) {
+	public static int getAllAnswerCount(Set<Group> groups) {
 		HashMap<Character, Integer> groupAnswersCount;
 		int count = 0;
 		
-		for (List<String> group : input) {
+		for (Group group : groups) {
 			groupAnswersCount = new HashMap<Character, Integer>();
-			for (String answers : group) {
-				for (Character answer : answers.toCharArray()) {
+			for (Person person : group.getPersons()) {
+				for (Character answer : person.getAnswers()) {
 					if (groupAnswersCount.containsKey(answer)) {
 						groupAnswersCount.put(answer, groupAnswersCount.get(answer) + 1);
 					}
@@ -38,7 +78,7 @@ public class Day06 {
 				}
 			}
 			for (Integer answerCount : groupAnswersCount.values()) {
-				if (answerCount == group.size()) {
+				if (answerCount == group.getNumberOfPersons()) {
 					count++;
 				}
 			}
@@ -47,34 +87,33 @@ public class Day06 {
 		return count;
 	}
 	
-	private static List<List<String>> getInput() {
-		List<List<String>> groups = new ArrayList<List<String>>();
-		List<String> answers = new ArrayList<String>();
+	private static Set<Group> getInput() {
+		Set<Group> groups = new HashSet<Group>();
+		Set<Person> groupPersons = new HashSet<Person>();
 		
 		for (String item : Util.getInputAsStringCollection("Inputs\\Day06.txt"))
 		{	
 			if (!item.isBlank()) 
 			{
-				answers.add(item);
+				groupPersons.add(new Person(item));
 			}
 			else 
 			{
-				groups.add(answers);
-				answers = new ArrayList<String>();
+				groups.add(new Group(groupPersons));
+				groupPersons = new HashSet<Person>();
 			}
 		}
-		if (answers.size() > 0)
-			groups.add(answers);
+		if (groupPersons.size() > 0)
+			groups.add(new Group(groupPersons));
 		
 		return groups;
 	}
 	
 	public static void main(String[] args) {
-		final List<List<String>> input = getInput();
+		Set<Group> input = getInput();
 		
-		System.out.printf("Total unique group answers count is %d.", getUniqueAnswerCount(input));	// PART 1
-		System.out.println();
-		System.out.printf("Total all group answers count is %d.", getAllAnswerCount(input));		// PART 2
+		System.out.printf("Total unique group answers count is %d.\n", getUniqueAnswerCount(input));	// PART 1
+		System.out.printf("Total all group answers count is %d.", getAllAnswerCount(input));			// PART 2
 	}
 
 }
