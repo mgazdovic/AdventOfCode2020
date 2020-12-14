@@ -1,9 +1,18 @@
+/**
+ * Advent Of Code 2020
+ *  >>> www.adventofcode.com/2020
+ * 
+ * This file contains solutions to day 5.
+ * 
+ * @author Mislav.Gazdovic, mislav.gazdovic@gmail.com
+ *
+ */
+
 package adventOfCode2020;
 
 import java.util.*;
 
 public class Day05 {
-
 	public static int getMissingSeatID(Collection<String> input) {
 		HashSet<Integer> seatIDs = getSeatIDs(input);
 		int maxSeatID = getMaxSeatID(input);
@@ -35,7 +44,6 @@ public class Day05 {
 	}
 	
 	private static int getSeatID(String partitioning) {
-		
 		if (partitioning.length() != 10) {
 			throw new IllegalArgumentException("Partitioning string must be 10 characters long...");
 		}
